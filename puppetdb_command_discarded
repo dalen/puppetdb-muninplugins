@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+#
+# Magic markers (used by munin-node-configure and some installation scripts):
+#%# family=auto
+#%# capabilities=autoconf
+
+case (ARGV[0] || 'fetch')
+when 'autoconf'
+  puts 'yes'
+when 'config'
+  puts 'graph_title PuppetDB discarded commands'
+  puts 'graph_info This graph shows how many commands PuppetDB discarded (retried them as many times as it can, to no avail)'
+  puts 'graph_category puppetdb'
+  puts 'commands.label Discarded commands'
+  puts 'commands.type COUNTER'
+when 'fetch'
+  require 'net/http'
+  require 'json'
+
+  http = Net::HTTP.new('localhost', 8080)
+  http.open_timeout=5
+  http.read_timeout=5
+  resp = http.get('/metrics/mbean/com.puppetlabs.puppetdb.command:type=global,name=discarded', { 'Accept' => 'application/json' })
+  data = JSON.parse(resp.body)
+  puts "command.value #{data['Count']}"
+end

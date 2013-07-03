@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+#
+# Magic markers (used by munin-node-configure and some installation scripts):
+#%# family=auto
+#%# capabilities=autoconf
+
+case (ARGV[0] || 'fetch')
+when 'autoconf'
+  puts 'yes'
+when 'config'
+  puts 'graph_title PuppetDB command processing time'
+  puts 'graph_info This graph shows stats about how long it takes to process commands'
+  puts 'graph_category puppetdb'
+  puts 'min.label min (ms)'
+  puts 'min.type GAUGE'
+  puts 'mean.label mean (ms)'
+  puts 'mean.type GAUGE'
+  puts '50.label 50% (ms)'
+  puts '50.type GAUGE'
+  puts '75.label 75% (ms)'
+  puts '75.type GAUGE'
+  puts '95.label 95% (ms)'
+  puts '95.type GAUGE'
+  puts '98.label 98% (ms)'
+  puts '98.type GAUGE'
+  puts '99.label 99% (ms)'
+  puts '99.type GAUGE'
+  puts '999.label 99.9% (ms)'
+  puts '999.type GAUGE'
+when 'fetch'
+  require 'net/http'
+  require 'json'
+
+  http = Net::HTTP.new('localhost', 8080)
+  http.open_timeout=5
+  http.read_timeout=5
+  resp = http.get('/metrics/mbean/com.puppetlabs.puppetdb.command:type=global,name=processing-time', { 'Accept' => 'application/json' })
+  data = JSON.parse(resp.body)
+  puts "min.value #{data['Min']}"
+  puts "mean.value #{data['Mean']}"
+  puts "50.value #{data['50thPercentile']}"
+  puts "75.value #{data['75thPercentile']}"
+  puts "95.value #{data['95thPercentile']}"
+  puts "98.value #{data['98thPercentile']}"
+  puts "99.value #{data['99thPercentile']}"
+  puts "999.value #{data['999thPercentile']}"
+end

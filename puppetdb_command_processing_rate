@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+#
+# Magic markers (used by munin-node-configure and some installation scripts):
+#%# family=auto
+#%# capabilities=autoconf
+
+case (ARGV[0] || 'fetch')
+when 'autoconf'
+  puts 'yes'
+when 'config'
+  puts 'graph_title PuppetDB command processing rate'
+  puts 'graph_info This graph shows stats about the rate of command processing'
+  puts 'graph_category puppetdb'
+  puts 'rate.label commands/second'
+  puts 'rate.type GAUGE'
+when 'fetch'
+  require 'net/http'
+  require 'json'
+
+  http = Net::HTTP.new('localhost', 8080)
+  http.open_timeout=5
+  http.read_timeout=5
+  resp = http.get('/metrics/mbean/com.puppetlabs.puppetdb.command:type=global,name=processing-time', { 'Accept' => 'application/json' })
+  data = JSON.parse(resp.body)
+  puts "rate.value #{data['OneMinuteRate']}"
+end
