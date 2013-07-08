@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+#
+# Magic markers (used by munin-node-configure and some installation scripts):
+#%# family=auto
+#%# capabilities=autoconf
+
+case (ARGV[0] || 'fetch')
+when 'autoconf'
+  puts 'yes'
+when 'config'
+  puts 'graph_title PuppetDB database metrics'
+  puts 'graph_info This graph shows database connection pool metrics'
+  puts 'graph_category puppetdb'
+  puts 'connwait.label Connection wait time (s)'
+  puts 'connwait.type COUNTER'
+  puts 'statementprepare.label Statement prepare time (s)'
+  puts 'statementprepare.type COUNTER'
+  puts 'statementexecution.label Statement execution time (s)'
+  puts 'statementexecution.type COUNTER'
+when 'fetch'
+  require 'net/http'
+  require 'json'
+
+  http = Net::HTTP.new('localhost', 8080)
+  http.open_timeout=5
+  http.read_timeout=5
+  resp = http.get('/metrics/mbean/com.jolbox.bonecp:type=BoneCP', { 'Accept' => 'application/json' })
+  data = JSON.parse(resp.body)
+  puts "connwait.value #{data['CumulativeConnectionWaitTime'].to_f/1000}"
+  puts "statementprepare.value #{data['CumulativeStatementPrepareTime'].to_f/1000}"
+  puts "statementexecution.value #{data['CumulativeStatementExecutionTime'].to_f/1000}"
+end
