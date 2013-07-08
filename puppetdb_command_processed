@@ -22,5 +22,5 @@ when 'fetch'
   http.read_timeout=5
   resp = http.get('/metrics/mbean/com.puppetlabs.puppetdb.command:type=global,name=processed', { 'Accept' => 'application/json' })
   data = JSON.parse(resp.body)
-  puts "command.value #{data['Count']}"
+  puts "commands.value #{data['Count']}"
 end
