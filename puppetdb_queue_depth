@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+#
+# Magic markers (used by munin-node-configure and some installation scripts):
+#%# family=auto
+#%# capabilities=autoconf
+
+case (ARGV[0] || 'fetch')
+when 'autoconf'
+  puts 'yes'
+when 'config'
+  puts 'graph_title PuppetDB command queue depth'
+  puts 'graph_info This graph shows how many commands are queued in puppetdb'
+  puts 'graph_category puppetdb'
+  puts 'depth.label Queue depth'
+  puts 'depth.type GAUGE'
+when 'fetch'
+  require 'net/http'
+  require 'json'
+
+  http = Net::HTTP.new('localhost', 8080)
+  http.open_timeout=5
+  http.read_timeout=5
+  resp = http.get('/metrics/mbean/org.apache.activemq:BrokerName=localhost,Type=Queue,Destination=com.puppetlabs.puppetdb.commands', { 'Accept' => 'application/json' })
+  data = JSON.parse(resp.body)
+  puts "depth.value #{data['QueueSize']}"
+end
