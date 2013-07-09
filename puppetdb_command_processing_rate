@@ -20,7 +20,7 @@ when 'fetch'
   http = Net::HTTP.new('localhost', 8080)
   http.open_timeout=5
   http.read_timeout=5
-  resp = http.get('/metrics/mbean/com.puppetlabs.puppetdb.command:type=global,name=processing-time', { 'Accept' => 'application/json' })
+  resp = http.get('/v1/metrics/mbean/com.puppetlabs.puppetdb.command:type=global,name=processing-time', { 'Accept' => 'application/json' })
   data = JSON.parse(resp.body)
   puts "rate.value #{data['OneMinuteRate']}"
 end
