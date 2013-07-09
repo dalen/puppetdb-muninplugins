@@ -1,0 +1,15 @@
+Source: puppetdb-munin-plugins
+Section: net
+Priority: extra
+Maintainer: Erik Dalen <dalen@spotify.com>
+DM-Upload-Allowed: yes
+Build-Depends: debhelper (>= 7.0.50~)
+Standards-Version: 3.9.2
+Homepage: https://github.com/dalen/puppetdb-muninplugins
+XS-Ruby-Versions: all
+
+Package: puppetdb-munin-plugins
+Architecture: all
+XB-Ruby-Versions: ${ruby:Versions}
+Depends: ${shlib:Depends}, ${misc:Depends}, ruby | ruby-interpreter, ruby-json
+Description: PuppetDB Munin Plugins
