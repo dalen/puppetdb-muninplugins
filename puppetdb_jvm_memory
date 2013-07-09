@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+#
+# Magic markers (used by munin-node-configure and some installation scripts):
+#%# family=auto
+#%# capabilities=autoconf
+
+case (ARGV[0] || 'fetch')
+when 'autoconf'
+  puts 'yes'
+when 'config'
+  puts 'graph_title PuppetDB JVM memory'
+  puts 'graph_info This graph shows PuppetDB JVM memory stats'
+  puts 'graph_category puppetdb'
+  puts 'graph_scale yes'
+  puts 'graph_args --base 1000 -l 0'
+  puts 'graph_vlabel bytes'
+  puts 'heapused.label heap used'
+  puts 'heapused.type GAUGE'
+  puts 'heapmax.label heap max'
+  puts 'heapmax.type GAUGE'
+  puts 'heapcommitted.label heap committed'
+  puts 'heapcommitted.type GAUGE'
+  puts 'nonheapused.label non-heap used'
+  puts 'nonheapused.type GAUGE'
+  puts 'nonheapmax.label non-heap max'
+  puts 'nonheapmax.type GAUGE'
+  puts 'nonheapcommitted.label non-heap committed'
+  puts 'nonheapcommitted.type GAUGE'
+when 'fetch'
+  require 'net/http'
+  require 'json'
+
+  http = Net::HTTP.new('localhost', 8080)
+  http.open_timeout=5
+  http.read_timeout=5
+  resp = http.get('/metrics/mbean/java.lang:type=Memory', { 'Accept' => 'application/json' })
+  data = JSON.parse(resp.body)
+  puts "heapused.value #{data['HeapMemoryUsage']['used']}"
+  puts "heapmax.value #{data['HeapMemoryUsage']['max']}"
+  puts "heapcommitted.value #{data['HeapMemoryUsage']['committed']}"
+  puts "nonheapused.value #{data['NonHeapMemoryUsage']['used']}"
+  puts "nonheapmax.value #{data['NonHeapMemoryUsage']['max']}"
+  puts "nonheapcommitted.value #{data['NonHeapMemoryUsage']['committed']}"
+end
