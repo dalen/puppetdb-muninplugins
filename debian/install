@@ -1,2 +1,9 @@
 puppetdb_command_discarded usr/share/munin/plugins
 puppetdb_command_fatal usr/share/munin/plugins
+puppetdb_command_processing_rate usr/share/munin/plugins
+puppetdb_command_retried usr/share/munin/plugins
+puppetdb_jvm_memory usr/share/munin/plugins
+puppetdb_command_processed usr/share/munin/plugins
+puppetdb_command_processing_time usr/share/munin/plugins
+puppetdb_database usr/share/munin/plugins
+puppetdb_queue_depth usr/share/munin/plugins
