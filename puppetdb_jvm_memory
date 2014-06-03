@@ -33,7 +33,7 @@ when 'fetch'
   http = Net::HTTP.new('localhost', 8080)
   http.open_timeout=5
   http.read_timeout=5
-  resp = http.get('/v1/metrics/mbean/java.lang:type=Memory', { 'Accept' => 'application/json' })
+  resp = http.get('/v3/metrics/mbean/java.lang:type=Memory', { 'Accept' => 'application/json' })
   data = JSON.parse(resp.body)
   puts "heapused.value #{data['HeapMemoryUsage']['used']}"
   puts "heapmax.value #{data['HeapMemoryUsage']['max']}"

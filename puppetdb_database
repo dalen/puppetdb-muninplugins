@@ -24,7 +24,7 @@ when 'fetch'
   http = Net::HTTP.new('localhost', 8080)
   http.open_timeout=5
   http.read_timeout=5
-  resp = http.get('/v1/metrics/mbean/com.jolbox.bonecp:type=BoneCP', { 'Accept' => 'application/json' })
+  resp = http.get('/v3/metrics/mbean/com.jolbox.bonecp:type=BoneCP', { 'Accept' => 'application/json' })
   data = JSON.parse(resp.body)
   puts "connwait.value #{data['CumulativeConnectionWaitTime'].to_f/1000}"
   puts "statementprepare.value #{data['CumulativeStatementPrepareTime'].to_f/1000}"
