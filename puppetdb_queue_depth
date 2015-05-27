@@ -15,6 +15,7 @@ when 'config'
   puts 'depth.type GAUGE'
 when 'fetch'
   require 'net/http'
+  require 'rubygems'
   require 'json'
 
   http = Net::HTTP.new('localhost', 8080)

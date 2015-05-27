@@ -19,6 +19,7 @@ when 'config'
   puts 'statementexecution.type COUNTER'
 when 'fetch'
   require 'net/http'
+  require 'rubygems'
   require 'json'
 
   http = Net::HTTP.new('localhost', 8080)
